@@ -1,14 +1,14 @@
 import styles from './styles.module.css';
 import NewsBanner from "../../components/NewsBanner/NewsBanner.jsx";
 import NewsList from "../../components/NewsList/NewsList.jsx";
-import Skeleton from "../../components/Skeleton/Skeleton.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import {useEffect, useState} from "react";
 import { getNews} from "../../api/apiNews.js";
-import data from "../../utils/data.js";
+import dataCategories from "../../utils/data.js";
 import Categories from "../../components/Categories/Categories.jsx";
 import Search from "../../components/Search/Search.jsx";
 import {useDebounce} from "../../helpers/hooks/useDebounce.js";
+import {TOTAL_PAGES, PAGE_SIZE} from "../../constants/constants.js";
 
 const Main = () => {
     const [news, setNews] = useState([]);
@@ -17,8 +17,6 @@ const Main = () => {
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [keywords, setKeywords] = useState('');
-    const totalPages = 10;
-    const pageSize = 10;
 
     const debouncedKeywords = useDebounce(keywords, 1500);
 
@@ -27,7 +25,7 @@ const Main = () => {
             setIsLoading(true);
             const response = await getNews({
                 page_number: currentPage,
-                page_size: pageSize,
+                page_size: PAGE_SIZE,
                 category: selectedCategory === 'All' ? null : selectedCategory,
                 keywords: debouncedKeywords,
             });
@@ -39,7 +37,7 @@ const Main = () => {
     };
 
     const fetchCategories = () => {
-        setCategories(['All', ...data.categories]);
+        setCategories(['All', ...dataCategories.categories]);
     }
 
     useEffect(() => {
@@ -53,7 +51,7 @@ const Main = () => {
         }, [currentPage, selectedCategory, debouncedKeywords]);
 
     const handleNextPage = () => {
-        if (currentPage < totalPages) {
+        if (currentPage < TOTAL_PAGES) {
             setCurrentPage(currentPage + 1);
         }
     }
@@ -74,31 +72,23 @@ const Main = () => {
 
             <Search keywords={keywords} setKeywords={setKeywords} />
 
-            {news.length > 0 && !isLoading ? (
-                <NewsBanner item={news[0]}/>
-            ) : (
-                <Skeleton count={1} type={'banner'}/>
-            )}
+            <NewsBanner isLoading={isLoading} item={news && news[0]}/>
 
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePreviousPage={handlePreviousPage}
                 handlePageClick={handlePageClick}
-                totalPages={totalPages}
+                totalPages={TOTAL_PAGES}
                 currentPage={currentPage}
             />
 
-            {!isLoading ? (
-                <NewsList news={news}/>
-            ) : (
-                <Skeleton count={10} type={'item'}/>
-            )}
+            <NewsList isLoading={isLoading} news={news}/>
 
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePreviousPage={handlePreviousPage}
                 handlePageClick={handlePageClick}
-                totalPages={totalPages}
+                totalPages={TOTAL_PAGES}
                 currentPage={currentPage}
             />
         </main>
