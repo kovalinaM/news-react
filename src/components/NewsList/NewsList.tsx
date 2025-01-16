@@ -1,11 +1,16 @@
 import withSkeleton from "../../helpers/hocs/withSkeleton";
-import NewsItem from "../NewsItem/NewsItem";
+import NewsItem from "../NewsItem/NewsItem.tsx";
 import styles from "./styles.module.css";
+import {INews} from "@/interfaces";
 
-const NewsList = ({ news }) => {
+interface Props {
+    news?: INews[];
+}
+
+const NewsList = ({ news }: Props) => {
     return (
         <ul className={styles.list}>
-            {news.map((item) => {
+            {news?.map((item) => {
                 return <NewsItem key={item.id} item={item} />;
             })}
         </ul>
