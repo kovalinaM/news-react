@@ -1,15 +1,18 @@
 import styles from './styles.module.css';
 import {IPaginationProps} from "@/interfaces";
+import {useTheme} from "../../context/ThemeContext.tsx";
 
 const Pagination = ({
                         totalPages,
                         handleNextPage,
                         handlePreviousPage,
                         handlePageClick,
-                        currentPage
+                        currentPage,
 }: IPaginationProps) => {
+    const {isDark} = useTheme();
+
     return (
-        <div className={styles.pagination}>
+        <div className={`${styles.pagination} ${isDark ? styles.dark : styles.light}`}>
             <button
                 onClick={handlePreviousPage}
                 className={styles.arrow}
