@@ -1,40 +1,35 @@
+import { getCategories } from "../../api/apiNews.ts";
+import { useFetch } from "../../helpers/hooks/useFetch.ts";
 import Categories from "../Categories/Categories.tsx";
 import Search from "../Search/Search";
 import styles from "./styles.module.css";
 import Slider from "../Slider/Slider.tsx";
-import {IFilters} from "@/interfaces";
+import {CategoriesApiResponse, IFilters} from "@/interfaces";
 import {useTheme} from "../../context/ThemeContext.tsx";
-import {useGetCategoriesQuery} from "../../store/services/newsApi.ts";
-import {setFilters} from "../../store/slices/newsSlice.ts";
-import {useAppDispatch} from "../../store";
 
 interface Props {
     filters: IFilters;
+    changeFilter: (key: string, value: string | number | null) => void;
 }
 
-const NewsFilters = ({ filters }: Props) => {
+const NewsFilters = ({ filters, changeFilter }: Props) => {
     const {isDark} = useTheme();
-    const {data} = useGetCategoriesQuery(null);
-
-    const dispatch = useAppDispatch();
-
+    const { data: dataCategories } = useFetch<CategoriesApiResponse, null>(getCategories);
     return (
         <div className={styles.filters}>
-            {data ? (
+            {dataCategories ? (
                 <Slider isDark={isDark}>
                     <Categories
-                    categories={data.categories}
+                    categories={dataCategories.categories}
                     selectedCategory={filters.category}
-                    setSelectedCategory={(category) =>
-                        dispatch(setFilters({key: "category", value: category}))
-                    }
+                    setSelectedCategory={(category) => changeFilter("category", category)}
                 />
                 </Slider>
             ) : null}
 
             <Search
                 keywords={filters.keywords}
-                setKeywords={(keywords) => dispatch(setFilters({key: "keywords", value: keywords}))}
+                setKeywords={(keywords) => changeFilter("keywords", keywords)}
             />
         </div>
     );
