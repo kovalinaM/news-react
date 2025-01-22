@@ -1,29 +1,29 @@
-import { useAppDispatch } from "@/app/appStore";
-import { useTheme } from "@/app/providers/ThemeProvider";
-import Categories from "@/features/category/ui/Categories/Categories";
-import Search from "@/features/search/ui/Search/Search";
-import Slider from "@/features/slider/ui/Slider/Slider";
+import { useAppDispatch } from "@/app/appStore.ts";
+import { useTheme } from "@/app/providers/ThemeProvider.tsx";
+import Categories from "@/features/category/ui/Categories/Categories.tsx";
+import Search from "@/features/search/ui/Search/Search.tsx";
+import Slider from "@/features/slider/ui/Slider/Slider.tsx";
 import { IFilters } from "@/shared/interfaces";
-import { setFilters } from "@/entities/news/model/newsSlice";
+import { setFilters } from "@/entities/news/model/newsSlice.ts";
 import styles from "./styles.module.css";
-import { useGetCategoriesQuery } from "@/entities/category/api/categoriesApi";
+import {CategoriesType} from "@/entities/category";
 
 interface Props {
     filters: IFilters;
+    categories: CategoriesType[];
 }
 
-const NewsFilters = ({ filters }: Props) => {
+const NewsFilters = ({ filters, categories }: Props) => {
     const { isDark } = useTheme();
-    const { data } = useGetCategoriesQuery(null);
 
     const dispatch = useAppDispatch();
 
     return (
         <div className={styles.filters}>
-            {data ? (
+            {categories ? (
                 <Slider isDark={isDark}>
                     <Categories
-                        categories={data.categories}
+                        categories={categories}
                         selectedCategory={filters.category}
                         setSelectedCategory={(category) =>
                             dispatch(setFilters({ key: "category", value: category }))
