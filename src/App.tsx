@@ -1,7 +1,7 @@
-import Header from "./components/Header/Header.tsx";
-import Main from "./pages/Main/Main.tsx";
-import './index.css';
-import {useTheme} from "./context/ThemeContext.tsx";
+import Header from "@/widgets/header/ui/Header/Header.tsx";
+import Page from "@/pages/main/ui/Page.tsx";
+import './shared/index.css';
+import {useTheme} from "./app/providers/ThemeProvider.tsx";
 
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
         <div className={`app ${isDark ? 'dark' : 'light'}`}>
             <Header/>
             <div className="container">
-                <Main/>
+                <Page/>
             </div>
         </div>
   )
